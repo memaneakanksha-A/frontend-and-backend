@@ -1,19 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import API from '../services/api';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import API from "../services/api";
 
 export default function ResetPassword() {
   const { token } = useParams();
-  const [password, setPassword] = useState('');
-  const [msg, setMsg] = useState('');
-  const [isError, setIsError] = useState(true); // track message type
+  const [password, setPassword] = useState("");
+  const [msg, setMsg] = useState("");
+  const [isError, setIsError] = useState(true);
   const [loading, setLoading] = useState(false);
   const nav = useNavigate();
 
-  // Check if token exists
   useEffect(() => {
     if (!token) {
-      setMsg('Invalid or missing reset token');
+      setMsg("Invalid or missing reset token");
       setIsError(true);
     }
   }, [token]);
@@ -22,38 +21,39 @@ export default function ResetPassword() {
     e.preventDefault();
 
     if (!password) {
-      setMsg('Please enter a new password');
+      setMsg("Please enter a new password");
       setIsError(true);
       return;
     }
 
     if (!token) {
-      setMsg('Invalid or missing reset token');
+      setMsg("Invalid or missing reset token");
       setIsError(true);
       return;
     }
 
     setLoading(true);
-    setMsg('');
+    setMsg("");
 
     try {
-      // Update this endpoint if your backend has a different path
-      const res = await API.post(`/auth/reset-password/${token}`, { password });
-      console.log('Reset response:', res);
+      const res = await API.post(
+        `/api/auth/reset-password/${token}`,
+        { password }
+      );
 
       const message =
-        res?.data?.msg || res?.data?.message || 'Password reset successful';
+        res?.data?.msg ||
+        res?.data?.message ||
+        "Password reset successful";
+
       setMsg(message);
       setIsError(false);
 
-      // Redirect to signin after 1.5s
-      setTimeout(() => nav('/signin'), 1500);
+      setTimeout(() => nav("/signin"), 1500);
     } catch (err) {
-      console.error('Reset error:', err);
-
       if (err.response) {
         if (err.response.status === 404) {
-          setMsg('Invalid or expired reset link');
+          setMsg("Invalid or expired reset link");
         } else {
           setMsg(
             err.response.data?.msg ||
@@ -61,12 +61,9 @@ export default function ResetPassword() {
               `Error: ${err.response.status}`
           );
         }
-      } else if (err.request) {
-        setMsg('No response from server. Please try again later.');
       } else {
-        setMsg('An unexpected error occurred. Please try again.');
+        setMsg("No response from server. Please try again later.");
       }
-
       setIsError(true);
     } finally {
       setLoading(false);
@@ -84,17 +81,18 @@ export default function ResetPassword() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           style={styles.input}
+          required
         />
 
         <button type="submit" disabled={loading} style={styles.button}>
-          {loading ? 'Resetting...' : 'Reset Password'}
+          {loading ? "Resetting..." : "Reset Password"}
         </button>
 
         {msg && (
           <p
             style={{
               ...styles.msg,
-              color: isError ? 'red' : 'green',
+              color: isError ? "red" : "green",
             }}
           >
             {msg}
@@ -104,6 +102,8 @@ export default function ResetPassword() {
     </div>
   );
 }
+
+/* styles unchanged */
 
 const styles = {
   container: {

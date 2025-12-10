@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'https://frontend-and-backend-yx35.onrender.com', // match your backend mount point
-});
+  baseURL: process.env.REACT_APP_API_URL,
+  withCredentials: true, });
 
 // Optional: adds Authorization from localStorage if exists
 API.interceptors.request.use((config) => {

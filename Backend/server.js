@@ -1,28 +1,54 @@
-// server.js - MERN backend setup
+// server.js - MERN Backend (Production Ready)
 
-const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '.env') }); // Load .env explicitly
+const path = require("path");
+const express = require("express");
+const cors = require("cors");
+require("dotenv").config({ path: path.join(__dirname, ".env") });
 
-console.log('Loaded MONGO_URI:', process.env.MONGO_URI); // Debug: should print your Mongo URI
+const connectDB = require("./config/db");
 
-const express = require('express');
-const cors = require('cors');
-const connectDB = require('./config/db'); // MongoDB connection
-
-// Connect to MongoDB
+// =====================
+// 🔌 Connect MongoDB
+// =====================
 connectDB();
 
 const app = express();
 
-// Middleware
-app.use(cors({
-  origin: process.env.FRONTEND_URL || '*' // Allow frontend URL
-}));
+// =====================
+// ✅ Middleware
+// =====================
 app.use(express.json());
 
-// Routes
-app.use('/api/auth', require('./routes/auth')); // Auth routes
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "https://frontend-and-backend-yx35.onrender.com ",
+    credentials: true,
+  })
+);
 
-// Start the server
+// =====================
+// ✅ Root Route (for Render health check)
+// =====================
+app.get("/", (req, res) => {
+  res.send("✅ Backend is running successfully 🚀");
+});
+
+// =====================
+// ✅ API Routes
+// =====================
+app.use("/api/auth", require("./routes/auth"));
+
+// =====================
+// ✅ 404 Handler
+// =====================
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
+
+// =====================
+// ✅ Start Server
+// =====================
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
