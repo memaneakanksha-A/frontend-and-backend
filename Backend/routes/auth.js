@@ -82,13 +82,9 @@ router.post('/forgot', async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ msg: "User not found" });
 
-    // 15-minute reset token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "15m" });
-
-    // Correct frontend URL
     const link = `${process.env.FRONTEND_URL}/reset-password/${token}`;
 
-    // HTML message for clickable link
     const htmlMessage = `
       <p>You requested to reset your password.</p>
       <p>Click the link below to reset it:</p>

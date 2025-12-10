@@ -1,29 +1,23 @@
 const Brevo = require('@getbrevo/brevo');
 
-module.exports = async function sendEmail(to, subject, text) {
-    try {
-        const apiInstance = new Brevo.TransactionalEmailsApi();
+module.exports = async function sendEmail(to, subject, html) {
+  try {
+    const apiInstance = new Brevo.TransactionalEmailsApi();
+    apiInstance.authentications['apiKey'].apiKey = process.env.BREVO_API_KEY;
 
-        // Your Brevo API key
-        apiInstance.authentications['apiKey'].apiKey = process.env.BREVO_API_KEY;
+    const email = {
+      sender: { email: "akankshamememane61@gmail.com", name: "Auth System" },
+      to: [{ email: to }],
+      subject,
+      htmlContent: html, // <-- must be htmlContent
+    };
 
-        // Your verified sender email from Brevo
-        const email = {
-            sender: { 
-                email: "akankshamemane61@gmail.com",  // <-- YOU PUT YOUR EMAIL HERE
-                name: "Auth System"
-            },
-            to: [{ email: to }],  // <-- USER'S EMAIL WHO WILL RECEIVE RESET LINK
-            subject: subject,
-            textContent: text,
-        };
+    await apiInstance.sendTransacEmail(email);
+    console.log("Reset email sent to:", to);
+    return true;
 
-        await apiInstance.sendTransacEmail(email);
-        console.log("Reset email sent to:", to);
-        return true;
-
-    } catch (error) {
-        console.error("Email error:", error);
-        return false;
-    }
+  } catch (error) {
+    console.error("Email error:", error);
+    return false;
+  }
 };
