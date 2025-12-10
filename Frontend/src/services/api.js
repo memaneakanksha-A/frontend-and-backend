@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api', // match your backend mount point
+  baseURL: 'https://frontend-and-backend-yx35.onrender.com', // match your backend mount point
 });
 
 // Optional: adds Authorization from localStorage if exists
