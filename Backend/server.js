@@ -21,7 +21,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "https://frontend-and-backend-1-5r8v.onrender.com",
+    origin: ["http://localhost:3000", "https://frontend-and-backend-1-5r8v.onrender.com"],
     credentials: true,
   })
 );
